@@ -127,7 +127,7 @@ activate RECLASSCRUI
             deactivate ITMDET
         SERVICE -->  RECLASSCRUI : ValidateResponse
         deactivate SERVICE
-        alt successful case
+        alt successful validation
         RECLASSCRUI -> SERVICE : GetItemDetails()
         activate SERVICE
             SERVICE -> REDIS : GetCachedItemDetails()

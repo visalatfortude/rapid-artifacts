@@ -1,0 +1,98 @@
+@startuml "Warehouse Confirmation"
+
+actor       "User"                  as USER 
+boundary    "Warehouse View"        as VIEW  #FF0000
+control     "Service"               as SERVICE #FF0000
+control     "M3"                    as M3  #FF0000
+control     "Redis"                 as REDIS   #FF0000
+control     "Notification Service"  as NOTIFIER    #FF0000
+entity      "Item Details"          as ITMDET    #FF0000
+entity      "FG Item Details"       as FGITMDET   #FF0000
+entity      "REQUEST_STS"           as RQSTS   #FF0000
+
+activate USER
+    USER -> VIEW : OpenView()
+    activate VIEW
+        VIEW -> VIEW : LoadData()
+        activate VIEW
+            VIEW -> SERVICE : GetAllRequests()
+            activate SERVICE
+                SERVICE -> RQSTS : GetDistinctRequests()
+                activate RQSTS
+                    RQSTS --> SERVICE
+                deactivate RQSTS
+                SERVICE --> VIEW
+            deactivate SERVICE
+        deactivate VIEW
+    deactivate VIEW 
+
+    USER -> VIEW : SelectRequest()
+    activate VIEW
+        VIEW -> SERVICE : GetLineDetails()
+        activate SERVICE
+            SERVICE -> RQSTS : GetSTSRequestDetails()
+            activate RQSTS
+                RQSTS --> SERVICE
+            deactivate RQSTS
+
+            SERVICE ->> M3 : API1()
+            activate M3
+            deactivate M3
+
+            SERVICE ->> M3 : API15()
+            activate M3
+            deactivate M3
+
+            SERVICE ->> ITMDET : Q1()
+            activate ITMDET
+            deactivate ITMDET
+
+            SERVICE ->> FGITMDET : Q2()
+            activate FGITMDET
+            deactivate FGITMDET
+
+            SERVICE --> VIEW
+        deactivate SERVICE
+
+        alt Line == 10-WH-PENDING
+            VIEW -> VIEW : EnableQtyAndComment()
+            activate VIEW
+            deactivate VIEW
+        end
+
+        VIEW -> VIEW : SugestConfirmedQtyAsRequestedQty()
+        activate VIEW
+        deactivate VIEW
+
+        alt User Reduce QTY
+            VIEW -> VIEW : MakeWHCommentRequired()
+            activate VIEW
+            deactivate VIEW
+        end
+
+    deactivate VIEW
+
+    loop While All Line Items
+        USER -> VIEW : EnterRequiredLineItemDetails()
+        activate VIEW
+            VIEW -> VIEW : Validate()
+            activate VIEW
+                VIEW -> SERVICE : API11-custom()
+                activate SERVICE
+                    SERVICE -> RQSTS :  UpdateSTSRequest()
+                    activate RQSTS
+                        RQSTS --> SERVICE
+                    deactivate RQSTS
+                    alt If 30-INSPECTION-PENDING
+                        SERVICE -> NOTIFIER : SendInspectionPendingNotification()
+                    end
+                deactivate SERVICE
+            deactivate VIEW
+            VIEW --> USER
+        deactivate VIEW
+    end
+deactivate USER
+
+
+
+@enduml
