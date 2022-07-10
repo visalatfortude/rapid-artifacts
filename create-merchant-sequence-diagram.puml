@@ -1,0 +1,170 @@
+@startuml "Merchant Create Request"
+
+actor       User                    as User 
+boundary "Create View"           as RECLASSCRUI  #FF0000
+control "Service"               as SERVICE #FF0000
+control "M3"                    as M3  #FF0000
+control "Redis"                 as REDIS   #FF0000
+control "Notification Service"  as NOTIFSER    #FF0000
+entity "Item Details"          as ITMDET    #FF0000
+entity "FG Item Details"       as FGITMDET   #FF0000
+entity "Item Types"            as ITMTP   #FF0000
+entity "REQUEST_STS"           as RQSTS   #FF0000
+
+
+User -> RECLASSCRUI : OpenView()
+activate User
+    activate RECLASSCRUI
+        RECLASSCRUI -> RECLASSCRUI : LoadData()
+        activate RECLASSCRUI
+            RECLASSCRUI -> SERVICE : LoadWarehouses()
+            activate SERVICE
+                SERVICE -> M3 : API0()
+                activate M3
+                    M3 --> SERVICE
+                deactivate M3
+            SERVICE --> RECLASSCRUI
+            deactivate SERVICE
+        deactivate RECLASSCRUI
+
+    RECLASSCRUI -> RECLASSCRUI : FilterWarehouses()
+    activate RECLASSCRUI
+    deactivate RECLASSCRUI
+
+    RECLASSCRUI --> User
+    deactivate RECLASSCRUI
+
+User -> RECLASSCRUI : SelectWarehouse()
+activate RECLASSCRUI
+RECLASSCRUI --> User
+deactivate RECLASSCRUI
+
+User -> RECLASSCRUI : EnterToStyle()
+activate RECLASSCRUI
+    RECLASSCRUI -> RECLASSCRUI : ValidateToStyle()
+    activate RECLASSCRUI
+        RECLASSCRUI -> FGITMDET : Q2()
+        activate FGITMDET
+        deactivate FGITMDET
+    deactivate RECLASSCRUI
+    RECLASSCRUI --> User
+deactivate RECLASSCRUI
+
+loop Until User Add Line Items
+User -> RECLASSCRUI : EnterFromSKU()
+activate RECLASSCRUI
+    RECLASSCRUI -> RECLASSCRUI : ValidateItem()
+    activate RECLASSCRUI
+        RECLASSCRUI -> SERVICE : ValidateItemType
+        activate SERVICE
+            SERVICE -> ITMTP : GetItemTypes()
+            activate ITMTP
+                ITMTP --> SERVICE
+            deactivate ITMTP
+            SERVICE --> RECLASSCRUI
+
+        deactivate SERVICE
+        RECLASSCRUI -> RECLASSCRUI : LoadLotNumber()
+        activate RECLASSCRUI
+            RECLASSCRUI -> SERVICE :LoadLotNumber()
+            activate SERVICE
+                SERVICE \\- M3 : API2()
+                activate M3
+                    M3 -> REDIS : CacheLotDetails()
+                    activate REDIS
+                    REDIS --> M3
+                    deactivate REDIS
+                    
+                deactivate M3
+
+                SERVICE \\- M3 : API12()
+                activate M3
+                    M3 -> REDIS : CacheSupplierDetails()
+                    activate REDIS
+                    REDIS --> M3
+                    deactivate REDIS
+                    
+                deactivate M3
+            SERVICE --> RECLASSCRUI : ConcatenatedResponse
+            deactivate SERVICE        
+        deactivate RECLASSCRUI
+
+    deactivate RECLASSCRUI
+    RECLASSCRUI --> User
+deactivate RECLASSCRUI
+
+User -> RECLASSCRUI : SelectLotNumber()
+activate RECLASSCRUI
+    RECLASSCRUI -> SERVICE : GetAllocatedQty
+    activate SERVICE
+        SERVICE -> M3 : API5()
+        activate M3
+            M3 --> SERVICE
+        deactivate M3
+    SERVICE --> RECLASSCRUI    
+    deactivate SERVICE
+        
+    RECLASSCRUI -> RECLASSCRUI : SetAllocatedQty()
+    activate RECLASSCRUI
+    deactivate RECLASSCRUI
+    deactivate SERVICE
+deactivate RECLASSCRUI
+deactivate RECLASSCRUI
+
+User -> RECLASSCRUI : EnterToSKU()
+activate RECLASSCRUI
+deactivate RECLASSCRUI
+
+User -> RECLASSCRUI : ClickAddRecordButton()
+activate RECLASSCRUI
+    RECLASSCRUI -> RECLASSCRUI : ValidateLineItem()
+    activate RECLASSCRUI
+        RECLASSCRUI -> SERVICE : ValidateLineItem()
+        activate SERVICE
+            SERVICE -> ITMDET : Q1()
+            activate ITMDET
+            ITMDET --> SERVICE
+            deactivate ITMDET
+        SERVICE -->  RECLASSCRUI : ValidateResponse
+        deactivate SERVICE
+        alt successful case
+        RECLASSCRUI -> SERVICE : GetItemDetails()
+        activate SERVICE
+            SERVICE -> REDIS : GetCachedItemDetails()
+            activate REDIS
+                REDIS --> SERVICE
+            deactivate REDIS
+        SERVICE --> RECLASSCRUI
+        deactivate SERVICE
+        RECLASSCRUI -> RECLASSCRUI : AddItemToGrid()
+        activate RECLASSCRUI
+        deactivate RECLASSCRUI            
+      
+    deactivate RECLASSCRUI
+    end
+
+    RECLASSCRUI -> RECLASSCRUI : ShowPopupMessage()
+    activate RECLASSCRUI
+    deactivate RECLASSCRUI
+deactivate RECLASSCRUI
+end
+
+User -> RECLASSCRUI: ClickCreateRequest()
+activate RECLASSCRUI
+    RECLASSCRUI -> SERVICE : CreateNegativeRO()
+    activate SERVICE
+        SERVICE -> M3 : API4()
+        activate M3
+            M3 --> SERVICE
+        deactivate M3
+        SERVICE -> M3 : API17()
+        activate M3
+            M3 --> SERVICE
+        deactivate M3
+    SERVICE --> RECLASSCRUI
+    deactivate SERVICE
+RECLASSCRUI --> User    
+deactivate RECLASSCRUI
+
+deactivate User
+@enduml
