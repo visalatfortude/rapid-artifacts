@@ -1,0 +1,46 @@
+@startuml "Warehouse Confirmation"
+
+actor       "User"                  as USER 
+boundary    "View Request View"     as VIEW  #FF0000
+control     "Service"               as SERVICE #FF0000
+control     "M3"                    as M3  #FF0000
+control     "Notification Service"  as NOTIFIER    #FF0000
+entity      "REQUEST_STS"           as RQSTS   #FF0000
+
+activate USER
+    USER -> VIEW : OpenView()
+    activate VIEW
+        alt If All Lines are 10-WH-PENDING
+            VIEW -> VIEW : EnableDeleteButton()
+        end
+    deactivate VIEW
+
+    USER -> VIEW : ClickOnDelete()
+    activate VIEW
+        VIEW -> SERVICE : DeleteRequest()
+        activate SERVICE
+            SERVICE -> M3 : API17()
+            activate M3
+                M3 --> SERVICE
+            deactivate M3
+
+            SERVICE -> RQSTS : UpdateStatus()
+            activate RQSTS
+                RQSTS --> SERVICE
+            deactivate RQSTS
+
+            alt If Not Success
+                SERVICE -> NOTIFIER : NotifyError()
+                activate NOTIFIER
+                    NOTIFIER --> SERVICE
+                deactivate NOTIFIER
+
+            else If Success
+                SERVICE -> M3 : API18()
+
+            end
+        deactivate SERVICE
+    deactivate VIEW
+deactivate USER
+
+@enduml
