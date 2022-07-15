@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2022-07-07T10:32:04.398Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36" etag="DGjtk8_NsJq_MvLkCjps" version="20.0.4" type="github" pages="2">
+<mxfile host="app.diagrams.net" modified="2022-07-15T03:25:52.918Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36" etag="MmVHLNyg-mx_KowOJfMm" version="20.0.4" type="github" pages="2">
   <diagram id="vyPTiAJM-5Oy2_5CqBcM" name="Page-1">
-    <mxGraphModel dx="2523" dy="2034" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1632" dy="1568" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -187,7 +187,7 @@
         <mxCell id="cnmCpfoTb3ZLm3PdTzCf-37" value="" style="group" parent="pLBHm1Zxr1Tqt-ue2brr-184" vertex="1" connectable="0">
           <mxGeometry x="62.04000000000002" y="121.46" width="210" height="97.07" as="geometry" />
         </mxCell>
-        <mxCell id="pLBHm1Zxr1Tqt-ue2brr-195" value="N/A" style="text;fillColor=none;align=center;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeColor=#B3B3B3;" parent="cnmCpfoTb3ZLm3PdTzCf-37" vertex="1">
+        <mxCell id="pLBHm1Zxr1Tqt-ue2brr-195" value="procurement-allocation-service" style="text;fillColor=none;align=center;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeColor=#B3B3B3;" parent="cnmCpfoTb3ZLm3PdTzCf-37" vertex="1">
           <mxGeometry x="-20" y="71.75" width="230" height="25.32" as="geometry" />
         </mxCell>
         <mxCell id="pLBHm1Zxr1Tqt-ue2brr-196" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=none;" parent="cnmCpfoTb3ZLm3PdTzCf-37" vertex="1">
@@ -601,15 +601,6 @@
             <mxPoint x="-10" y="490" as="sourcePoint" />
             <mxPoint x="40" y="440" as="targetPoint" />
           </mxGeometry>
-        </mxCell>
-        <mxCell id="YxbTeeAqUJjRJBQtcxc5-1" value="" style="endArrow=none;html=1;rounded=0;fontColor=#FF0000;" parent="1" source="pLBHm1Zxr1Tqt-ue2brr-185" target="YxbTeeAqUJjRJBQtcxc5-3" edge="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="900" y="470" as="sourcePoint" />
-            <mxPoint x="950" y="420" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="YxbTeeAqUJjRJBQtcxc5-3" value="Allocation SDK????" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
-          <mxGeometry x="1155" y="-60" width="195" height="120" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
